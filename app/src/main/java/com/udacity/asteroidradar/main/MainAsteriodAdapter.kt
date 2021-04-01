@@ -18,16 +18,12 @@ class MainAsteriodAdapter: RecyclerView.Adapter<MainAsteriodAdapter.ViewHolder>(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val layoutInflator = LayoutInflater.from(parent.context)
-        val view = layoutInflator.inflate(R.layout.asteriod_item_view, parent, false)
-        return ViewHolder(view)
+        return ViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
-        holder.codeName.text = item.codename
-        holder.date.text = item.closeApproachDate
-        holder.hazardImage.setImageResource( if (item.isPotentiallyHazardous) R.drawable.ic_status_potentially_hazardous else R.drawable.ic_status_normal )
+        holder.bind(item)
     }
 
     override fun getItemCount(): Int {
@@ -38,6 +34,21 @@ class MainAsteriodAdapter: RecyclerView.Adapter<MainAsteriodAdapter.ViewHolder>(
         val codeName: TextView = itemView.findViewById(R.id.mainCodeNameTextView)
         val date: TextView = itemView.findViewById(R.id.mainDateTextView)
         val hazardImage: ImageView = itemView.findViewById(R.id.mainHazardImageView)
+
+        fun bind(item: Asteroid) {
+            codeName.text = item.codename
+            date.text = item.closeApproachDate
+            hazardImage.setImageResource(if (item.isPotentiallyHazardous) R.drawable.ic_status_potentially_hazardous else R.drawable.ic_status_normal)
+        }
+
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder {
+                val layoutInflator = LayoutInflater.from(parent.context)
+                val view = layoutInflator.inflate(R.layout.asteriod_item_view, parent, false)
+
+                return ViewHolder(view)
+            }
+        }
     }
 }
 
