@@ -23,8 +23,10 @@ class MainFragment : Fragment() {
 
         val adapter = MainAsteriodAdapter()
         binding.asteroidRecycler.adapter = adapter
-        viewModel.asteriodData.observe(viewLifecycleOwner, Observer { asteriods ->
-            adapter.data = asteriods
+        viewModel.asteriodData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                adapter.submitList(it)
+            }
         })
 
         setHasOptionsMenu(true)
