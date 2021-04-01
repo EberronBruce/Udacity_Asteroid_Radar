@@ -1,15 +1,13 @@
 package com.udacity.asteroidradar.main
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.R
+import com.udacity.asteroidradar.databinding.AsteriodItemViewBinding
 
 class MainAsteriodAdapter: ListAdapter<Asteroid, MainAsteriodAdapter.ViewHolder>(MainAsteriodDiffCallback()) {
 
@@ -22,23 +20,19 @@ class MainAsteriodAdapter: ListAdapter<Asteroid, MainAsteriodAdapter.ViewHolder>
         holder.bind(item)
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val codeName: TextView = itemView.findViewById(R.id.mainCodeNameTextView)
-        val date: TextView = itemView.findViewById(R.id.mainDateTextView)
-        val hazardImage: ImageView = itemView.findViewById(R.id.mainHazardImageView)
+    class ViewHolder private constructor(val binding: AsteriodItemViewBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Asteroid) {
-            codeName.text = item.codename
-            date.text = item.closeApproachDate
-            hazardImage.setImageResource(if (item.isPotentiallyHazardous) R.drawable.ic_status_potentially_hazardous else R.drawable.ic_status_normal)
+            binding.mainCodeNameTextView.text = item.codename
+            binding.mainDateTextView.text = item.closeApproachDate
+            binding.mainHazardImageView.setImageResource(if (item.isPotentiallyHazardous) R.drawable.ic_status_potentially_hazardous else R.drawable.ic_status_normal)
         }
 
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflator = LayoutInflater.from(parent.context)
-                val view = layoutInflator.inflate(R.layout.asteriod_item_view, parent, false)
-
-                return ViewHolder(view)
+                val binding = AsteriodItemViewBinding.inflate(layoutInflator, parent, false)
+                return ViewHolder(binding)
             }
         }
     }
