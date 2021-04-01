@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.udacity.asteroidradar.Asteroid
-import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.AsteriodItemViewBinding
 
 class MainAsteriodAdapter: ListAdapter<Asteroid, MainAsteriodAdapter.ViewHolder>(MainAsteriodDiffCallback()) {
@@ -23,9 +22,8 @@ class MainAsteriodAdapter: ListAdapter<Asteroid, MainAsteriodAdapter.ViewHolder>
     class ViewHolder private constructor(val binding: AsteriodItemViewBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Asteroid) {
-            binding.mainCodeNameTextView.text = item.codename
-            binding.mainDateTextView.text = item.closeApproachDate
-            binding.mainHazardImageView.setImageResource(if (item.isPotentiallyHazardous) R.drawable.ic_status_potentially_hazardous else R.drawable.ic_status_normal)
+            binding.asteroid = item
+            binding.executePendingBindings()
         }
 
         companion object {
