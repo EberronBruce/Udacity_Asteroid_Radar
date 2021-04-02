@@ -14,10 +14,16 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
-
+enum class AsteriodApiStatus { LOADING, ERROR, DONE }
 
 class MainViewModel : ViewModel() {
+
+    private val _asteriodStatus = MutableLiveData<AsteriodApiStatus>()
+    val asteriodStatus: LiveData<AsteriodApiStatus>
+        get() = _asteriodStatus
+
     private var _asteriodData = MutableLiveData<List<Asteroid>>()
     val asteriodData: LiveData<List<Asteroid>>
         get() = _asteriodData
@@ -31,9 +37,7 @@ class MainViewModel : ViewModel() {
         get() = _dailyImage
 
     init {
-        val sdf = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
-        val currentDate = sdf.format(Date())
-        getAsteroids(currentDate)
+        getAsteroids(SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault()).format(Date()))
         getApod()
     }
 
@@ -47,19 +51,28 @@ class MainViewModel : ViewModel() {
 
     private fun getAsteroids(date: String) {
         viewModelScope.launch {
+            _asteriodStatus.value = AsteriodApiStatus.LOADING
             try {
                 val jsonResponse = JSONObject(AsteroidApi.retrofitService.getAsteroids(date, Constants.API_KEY))
                 _asteriodData.value = parseAsteroidsJsonResult(jsonResponse)
+                _asteriodStatus.value = AsteriodApiStatus.DONE
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Asteroid Failure: ${e.message}")
+                _asteriodStatus.value = AsteriodApiStatus.ERROR
+                _asteriodData.value = ArrayList()
             }
         }
     }
-    
+
     private fun getApod() {
         viewModelScope.launch {
             try {
-                _dailyImage.value = AsteroidApi.retrofitService.getApod(Constants.API_KEY)
+                val downloadedImage = AsteroidApi.retrofitService.getApod(Constants.API_KEY)
+                if (downloadedImage.mediaType.toLowerCase(Locale.getDefault()) == Constants.IMAGE_KEY) {
+                    _dailyImage.value = downloadedImage
+                } else {
+                    _dailyImage.value = null
+                }
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Apod Failure: ${e.message}")
             }

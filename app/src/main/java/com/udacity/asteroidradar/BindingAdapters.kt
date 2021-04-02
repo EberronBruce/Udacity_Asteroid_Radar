@@ -1,8 +1,26 @@
 package com.udacity.asteroidradar
 
+import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import com.udacity.asteroidradar.main.AsteriodApiStatus
+
+@BindingAdapter("asteriodApiStatus")
+fun asteriodBindStatus(progressBar: ProgressBar, status: AsteriodApiStatus?){
+    when (status) {
+        AsteriodApiStatus.LOADING -> {
+            progressBar.visibility = View.VISIBLE
+        }
+        AsteriodApiStatus.DONE -> {
+            progressBar.visibility = View.GONE
+        }
+        AsteriodApiStatus.ERROR -> {
+            progressBar.visibility = View.GONE
+        }
+    }
+}
 
 @BindingAdapter("statusIcon")
 fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {
