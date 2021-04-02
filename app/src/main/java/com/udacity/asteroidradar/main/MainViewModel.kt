@@ -4,15 +4,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.DailyImage
 import com.udacity.asteroidradar.api.AsteroidApi
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
+import kotlinx.coroutines.launch
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -47,27 +46,24 @@ class MainViewModel : ViewModel() {
     }
 
     private fun getAsteroids(date: String) {
-        AsteroidApi.retrofitService.getAsteroids(date, Constants.API_KEY).enqueue( object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                _asteriodData.value = parseAsteroidsJsonResult(JSONObject(response.body().toString()))
+        viewModelScope.launch {
+            try {
+                val jsonResponse = JSONObject(AsteroidApi.retrofitService.getAsteroids(date, Constants.API_KEY))
+                _asteriodData.value = parseAsteroidsJsonResult(jsonResponse)
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Asteroid Failure: ${e.message}")
             }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.d("MainViewModel", "Failure: ${t.message}")
-            }
-
-        })
+        }
     }
+    
     private fun getApod() {
-        AsteroidApi.retrofitService.getApod(Constants.API_KEY).enqueue( object : Callback<DailyImage> {
-            override fun onResponse(call: Call<DailyImage>, response: Response<DailyImage>) {
-                _dailyImage.value = response.body()
+        viewModelScope.launch {
+            try {
+                _dailyImage.value = AsteroidApi.retrofitService.getApod(Constants.API_KEY)
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Apod Failure: ${e.message}")
             }
-
-            override fun onFailure(call: Call<DailyImage>, t: Throwable) {
-                Log.d("MainViewModel", "Failure: ${t.message}")
-            }
-        })
+        }
     }
 
 }
