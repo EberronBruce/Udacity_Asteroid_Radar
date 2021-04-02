@@ -5,14 +5,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.api.AsteroidApi
+import com.udacity.asteroidradar.api.parseApodJsonResult
+import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 
-private const val API_KEY = "CHII60uETgFUbqsFXMCTjx3KxpzYdaFpaUPHe51Z"
+
 
 class MainViewModel : ViewModel() {
     private var _asteriodData = MutableLiveData<List<Asteroid>>()
@@ -23,11 +27,16 @@ class MainViewModel : ViewModel() {
     val navigateToDetail
         get() = _navigateToDetail
 
+    private val _dailyImageUrl = MutableLiveData<Map<String, String>>()
+    val dailyImageUrl: LiveData<Map<String, String>>
+        get() = _dailyImageUrl
+
     init {
         Log.d("MainViewModel", "----------- Init -------------")
         val sdf = SimpleDateFormat("yyyy-mm-dd")
         val currentDate = sdf.format(Date())
         getAsteroids(currentDate)
+        getApod()
     }
 
     fun onAsteroidClicked(asteroid: Asteroid) {
@@ -39,16 +48,32 @@ class MainViewModel : ViewModel() {
     }
 
     private fun getAsteroids(date: String) {
-        AsteroidApi.retrofitService.getAsteroids(date, API_KEY).enqueue( object : Callback<String> {
+        AsteroidApi.retrofitService.getAsteroids(date, Constants.API_KEY).enqueue( object : Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
-                Log.d("MainViewModel", "Headers: ${response.headers()}")
-                Log.d("MainViewModel", "Body: ${response.body()}")
+                //Log.d("MainViewModel", "Body: ${response.body()}")
+                var asteroids = parseAsteroidsJsonResult(JSONObject(response.body().toString()))
+                _asteriodData.value = asteroids
             }
 
             override fun onFailure(call: Call<String>, t: Throwable) {
                 Log.d("MainViewModel", "Failure: ${t.message}")
             }
 
+        })
+    }
+    private fun getApod() {
+        AsteroidApi.retrofitService.getApod(Constants.API_KEY).enqueue( object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                Log.d("MainViewModel", "${response.raw().request().url()}")
+                val imgInfoMap = parseApodJsonResult(JSONObject(response.body().toString()))
+                if (imgInfoMap != null) {
+                    _dailyImageUrl.value = imgInfoMap
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.d("MainViewModel", "Failure: ${t.message}")
+            }
         })
     }
 
