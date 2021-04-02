@@ -1,12 +1,20 @@
 package com.udacity.asteroidradar.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.api.AsteroidApi
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
+
+private const val API_KEY = "CHII60uETgFUbqsFXMCTjx3KxpzYdaFpaUPHe51Z"
 
 class MainViewModel : ViewModel() {
-
     private var _asteriodData = MutableLiveData<List<Asteroid>>()
     val asteriodData: LiveData<List<Asteroid>>
         get() = _asteriodData
@@ -16,22 +24,10 @@ class MainViewModel : ViewModel() {
         get() = _navigateToDetail
 
     init {
-        _asteriodData.value = mutableListOf(
-            Asteroid(1, "one", "Apirl 1", 20.3, 40.5, 60.5, 1005.35,false),
-            Asteroid(2, "two", "Oct 2", 20.3, 40.5, 60.5, 1005.35,true),
-            Asteroid(3, "three", "Sept 3", 20.3, 40.5, 60.5, 1005.35,false),
-            Asteroid(4, "four", "Jan 2", 20.3, 40.5, 60.5, 1005.35,false),
-            Asteroid(5, "five", "Sept 1", 20.3, 40.5, 60.5, 1005.35,true),
-            Asteroid(6, "six", "May 20", 20.3, 40.5, 60.5, 1005.35,false),
-            Asteroid(7, "seven", "Feb 4", 20.3, 40.5, 60.5, 1005.35,false),
-            Asteroid(8, "eight", "Oct 1", 20.3, 40.5, 60.5, 1005.35,false),
-            Asteroid(9, "nine", "June 15", 20.3, 40.5, 60.5, 1005.35,true),
-            Asteroid(10, "ten", "July 4", 20.3, 40.5, 60.5, 1005.35,false),
-            Asteroid(11, "eleven", "June 3", 20.3, 40.5, 60.5, 1005.35,false),
-            Asteroid(12, "twelve", "August 6", 20.3, 40.5, 60.5, 1005.35,false),
-            Asteroid(13, "thirteen", "Nov 8", 20.3, 40.5, 60.5, 1005.35,false),
-            Asteroid(14, "fourteen", "Dec 12", 20.3, 40.5, 60.5, 1005.35,false)
-        )
+        Log.d("MainViewModel", "----------- Init -------------")
+        val sdf = SimpleDateFormat("yyyy-mm-dd")
+        val currentDate = sdf.format(Date())
+        getAsteroids(currentDate)
     }
 
     fun onAsteroidClicked(asteroid: Asteroid) {
@@ -40,6 +36,20 @@ class MainViewModel : ViewModel() {
 
     fun onAsteroidNavigated() {
         _navigateToDetail.value = null
+    }
+
+    private fun getAsteroids(date: String) {
+        AsteroidApi.retrofitService.getAsteroids(date, API_KEY).enqueue( object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                Log.d("MainViewModel", "Headers: ${response.headers()}")
+                Log.d("MainViewModel", "Body: ${response.body()}")
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.d("MainViewModel", "Failure: ${t.message}")
+            }
+
+        })
     }
 
 }
