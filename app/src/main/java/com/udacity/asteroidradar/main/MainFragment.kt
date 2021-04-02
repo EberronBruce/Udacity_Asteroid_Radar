@@ -7,7 +7,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.Picasso
-import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
 
@@ -44,11 +43,10 @@ class MainFragment : Fragment() {
             }
         })
 
-        viewModel.dailyImageUrl.observe(viewLifecycleOwner, Observer { imgInfo ->
-            imgInfo?.let {
-                val imgUrl = imgInfo[Constants.IMG_URL_KEY]
-                Picasso.get().load(imgUrl).into(binding.activityMainImageOfTheDay)
-                binding.activityMainImageOfTheDay.contentDescription = imgInfo[Constants.IMG_EXPLANATION]
+        viewModel.dailyImage.observe(viewLifecycleOwner, Observer { dailyImage ->
+            dailyImage?.let {
+                Picasso.get().load(dailyImage.url).into(binding.activityMainImageOfTheDay)
+                binding.activityMainImageOfTheDay.contentDescription = dailyImage.explanation
             }
         })
 

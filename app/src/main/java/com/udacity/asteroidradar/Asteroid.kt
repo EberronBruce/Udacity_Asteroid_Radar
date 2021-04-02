@@ -1,6 +1,7 @@
 package com.udacity.asteroidradar
 
 import android.os.Parcelable
+import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -8,3 +9,15 @@ data class Asteroid(val id: Long, val codename: String, val closeApproachDate: S
                     val absoluteMagnitude: Double, val estimatedDiameter: Double,
                     val relativeVelocity: Double, val distanceFromEarth: Double,
                     val isPotentiallyHazardous: Boolean) : Parcelable
+
+@Parcelize
+data class DailyImage(val copyright: String,
+                      val date: String,
+                      val explanation: String,
+                      val hdurl: String,
+                      @Json(name = "media_type")
+                      val mediaType: String,
+                      @Json(name = "service_version")
+                      val serviceVersion: String,
+                      val title: String,
+                      val url: String) : Parcelable

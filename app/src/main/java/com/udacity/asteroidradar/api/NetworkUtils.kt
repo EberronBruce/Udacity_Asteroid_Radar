@@ -42,15 +42,6 @@ fun parseAsteroidsJsonResult(jsonResult: JSONObject): ArrayList<Asteroid> {
     return asteroidList
 }
 
-fun parseApodJsonResult(jsonResult: JSONObject): Map<String, String>? {
-    val mediaType = jsonResult.getString("media_type")
-    if (mediaType == "image") {
-        val imgUrl = jsonResult.getString("url")
-        val explanation = jsonResult.getString("explanation")
-        return mapOf(Constants.IMG_URL_KEY to imgUrl, Constants.IMG_EXPLANATION to explanation)
-    }
-    return null
-}
 
 private fun getNextSevenDaysFormattedDates(): ArrayList<String> {
     val formattedDateList = ArrayList<String>()
