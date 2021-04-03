@@ -11,13 +11,7 @@ data class Asteroid(val id: Long, val codename: String, val closeApproachDate: S
                     val isPotentiallyHazardous: Boolean) : Parcelable
 
 @Parcelize
-data class DailyImage(val copyright: String,
-                      val date: String,
-                      val explanation: String,
-                      val hdurl: String,
+data class DailyImage(val explanation: String,
                       @Json(name = "media_type")
                       val mediaType: String,
-                      @Json(name = "service_version")
-                      val serviceVersion: String,
-                      val title: String,
                       val url: String) : Parcelable

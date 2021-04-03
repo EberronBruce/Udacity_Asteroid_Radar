@@ -1,5 +1,6 @@
 package com.udacity.asteroidradar
 
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -18,6 +19,7 @@ fun asteriodBindStatus(progressBar: ProgressBar, status: AsteriodApiStatus?){
         }
         AsteriodApiStatus.ERROR -> {
             progressBar.visibility = View.GONE
+            Log.e("BindingAdapter", "Asteriod API Status Error")
         }
     }
 }
