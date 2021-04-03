@@ -7,14 +7,14 @@ import androidx.room.*
 
 @Dao
 interface AsteroidDao {
-    @Query("SELECT * FROM databaseasteroid")
-    fun getAsteroids(): LiveData<List<DatabaseAsteroid>>
+    @Query("SELECT * FROM databaseasteriod")
+    fun getAsteroids(): LiveData<List<DatabaseAsteriod>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(vararg asteroids: DatabaseAsteroid)
+    fun insertAll(vararg asteroids: DatabaseAsteriod)
 }
 
-@Database(entities = [DatabaseAsteroid::class], version = 1)
+@Database(entities = [DatabaseAsteriod::class], version = 1)
 abstract class AsteroidDatabase: RoomDatabase() {
     abstract val asteroidDao: AsteroidDao
 }
@@ -26,7 +26,7 @@ fun getDatabase(context: Context): AsteroidDatabase {
         if(!::INSTANCE.isInitialized) {
             INSTANCE = Room.databaseBuilder(context.applicationContext,
             AsteroidDatabase::class.java,
-            "asteroids").build()
+            "asteriods").build()
         }
     }
     return INSTANCE

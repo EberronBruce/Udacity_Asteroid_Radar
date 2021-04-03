@@ -6,7 +6,7 @@ import com.udacity.asteroidradar.Asteroid
 
 
 @Entity
-data class DatabaseAsteroid constructor(
+data class DatabaseAsteriod constructor(
     @PrimaryKey
     val id: Long,
     val codename: String,
@@ -17,7 +17,7 @@ data class DatabaseAsteroid constructor(
     val distanceFromEarth: Double,
     val isPotentiallyHazardous: Boolean)
 
-fun List<DatabaseAsteroid>.asDomainModel(): List<Asteroid> {
+fun List<DatabaseAsteriod>.asDomainModel(): List<Asteroid> {
     return map {
         Asteroid(
             id = it.id,
