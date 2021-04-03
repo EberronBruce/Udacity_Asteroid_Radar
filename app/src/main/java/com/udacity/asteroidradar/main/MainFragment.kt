@@ -2,6 +2,7 @@ package com.udacity.asteroidradar.main
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -41,12 +42,19 @@ class MainFragment : Fragment() {
             it?.let {
                 adapter.submitList(it)
             }
+            if(it.isEmpty()) {
+                Toast.makeText(this.context,"No Data, probably unable to connect to network", Toast.LENGTH_LONG).show()
+            }
         })
 
         viewModel.dailyImage.observe(viewLifecycleOwner, Observer { dailyImage ->
             dailyImage?.let {
                 Picasso.get().load(dailyImage.url).into(binding.activityMainImageOfTheDay)
                 binding.activityMainImageOfTheDay.contentDescription = dailyImage.title
+            }
+
+            if(dailyImage == null) {
+                binding.activityMainImageOfTheDay.setImageResource(R.drawable.placeholder_picture_of_day)
             }
         })
 

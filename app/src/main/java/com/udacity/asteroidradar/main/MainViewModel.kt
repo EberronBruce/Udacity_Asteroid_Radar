@@ -75,6 +75,7 @@ class MainViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Apod Failure: ${e.message}")
+                _dailyImage.value = null
             }
         }
     }
