@@ -46,7 +46,7 @@ class MainFragment : Fragment() {
         viewModel.dailyImage.observe(viewLifecycleOwner, Observer { dailyImage ->
             dailyImage?.let {
                 Picasso.get().load(dailyImage.url).into(binding.activityMainImageOfTheDay)
-                binding.activityMainImageOfTheDay.contentDescription = dailyImage.explanation
+                binding.activityMainImageOfTheDay.contentDescription = dailyImage.title
             }
         })
 
