@@ -51,13 +51,13 @@ class MainFragment : Fragment() {
             }
         })
 
-        viewModel.dailyImage.observe(viewLifecycleOwner, Observer { dailyImage ->
-            dailyImage?.let {
-                Picasso.get().load(dailyImage.url).into(binding.activityMainImageOfTheDay)
-                binding.activityMainImageOfTheDay.contentDescription = dailyImage.title
+        viewModel.dailyImage.observe(viewLifecycleOwner, Observer { pictureOfTheDay ->
+            pictureOfTheDay?.let {
+                Picasso.get().load(pictureOfTheDay.url).into(binding.activityMainImageOfTheDay)
+                binding.activityMainImageOfTheDay.contentDescription = pictureOfTheDay.title
             }
 
-            if(dailyImage == null) {
+            if(pictureOfTheDay == null) {
                 binding.activityMainImageOfTheDay.setImageResource(R.drawable.placeholder_picture_of_day)
             }
         })

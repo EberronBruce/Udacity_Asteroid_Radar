@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
-import com.udacity.asteroidradar.DailyImage
+import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.api.AsteroidApi
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.repository.AsteroidRepository
@@ -35,8 +35,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val navigateToDetail
         get() = _navigateToDetail
 
-    private val _dailyImage = MutableLiveData<DailyImage>()
-    val dailyImage: LiveData<DailyImage>
+    private val _dailyImage = MutableLiveData<PictureOfDay>()
+    val dailyImage: LiveData<PictureOfDay>
         get() = _dailyImage
 
     /*
