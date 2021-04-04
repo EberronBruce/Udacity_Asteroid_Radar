@@ -1,9 +1,14 @@
-# Purpose of this Folder
+# Project Title
 
-This folder should contain the scaffolded project files to get a student started on their project. This repo will be added to the Classroom for students to use, so please do not have any solutions in this folder.
+Asteroid Radar
 
-## Note: Android Kotlin Gradle Update
-Use the updated Gradle version in the `~/gradle/wrapper/gradle-wrapper.properties` file:
-```
-distributionUrl = https\://services.gradle.org/distributions/gradle-6.1.1-all.zip
-```
+### Installation
+Should be able to clone the app and it should start working in Android Studios. This is for the Android Udacity class. 
+
+## Built With
+
+To build this project you are going to use the NASA NeoWS (Near Earth Object Web Service) API, which you can find here.
+https://api.nasa.gov/
+
+
+

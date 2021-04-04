@@ -64,7 +64,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    suspend fun deleteOldAsteroids() {
+    private suspend fun deleteOldAsteroids() {
         viewModelScope.launch {
             asteroidRepository.deleteOldAsteroids()
         }
