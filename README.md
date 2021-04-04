@@ -3,7 +3,7 @@
 Asteroid Radar
 
 ### Installation
-Should be able to clone the app and it should start working in Android Studios. This is for the Android Udacity class. 
+Should be able to clone the app and it should start working in Android Studios. This is for the Android Udacity class. Put your API key in Constants.kt. It would be marked with Put your API Key here.
 
 ## Built With
 
