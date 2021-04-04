@@ -11,6 +11,7 @@ import com.udacity.asteroidradar.api.asDatabaseModel
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
 import com.udacity.asteroidradar.database.AsteroidDatabase
 import com.udacity.asteroidradar.database.asDomainModel
+import com.udacity.asteroidradar.main.AsteroidFilter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -20,21 +21,7 @@ import java.util.*
 class AsteroidRepository(private val database: AsteroidDatabase) {
 
     val currentDate = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault()).format(Date())
-
-    val asteroids: LiveData<List<Asteroid>> =
-        Transformations.map(database.asteroidDao.getAsteroids()) {
-            it.asDomainModel()
-        }
-
-    val todayAsteroids: LiveData<List<Asteroid>> = Transformations.map(database.asteroidDao.getAsteroidsForDate(currentDate)) {
-        it.asDomainModel()
-    }
-
-    fun getAsteroidsFromDate(days: String) : LiveData<List<Asteroid>> {
-        return Transformations.map(database.asteroidDao.getAsteroidsFromDate(days)) {
-            it.asDomainModel()
-        }
-    }
+    val week =  getDateRangeFrom(Constants.NUMBER_OF_DAYS_IN_WEEK - Calendar.getInstance().get(Calendar.DAY_OF_WEEK))
 
     suspend fun deleteOldAsteroids() {
         withContext(Dispatchers.IO) {
@@ -58,4 +45,25 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
 
         }
     }
+
+    fun getAsteroidSelection(filter: AsteroidFilter) : LiveData<List<Asteroid>> {
+        return when (filter) {
+            AsteroidFilter.WEEK -> Transformations.map(database.asteroidDao.getAsteroidsFromDate(week)) {
+                it.asDomainModel() }
+            AsteroidFilter.TODAY -> Transformations.map(database.asteroidDao.getAsteroidsForDate(currentDate)) {
+                it.asDomainModel() }
+            else -> Transformations.map(database.asteroidDao.getAsteroids()) {
+                it.asDomainModel()
+            }
+        }
+    }
+}
+
+fun getDateRangeFrom(difference : Int) : String {
+    val calendar = Calendar.getInstance()
+    calendar.add(Calendar.DAY_OF_YEAR, difference)
+    val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
+    val getDate = dateFormat.format(calendar.time)
+    Log.d("MainViewModel", "getDate: ${getDate}")
+    return getDate
 }

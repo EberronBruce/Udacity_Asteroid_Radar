@@ -1,6 +1,7 @@
 package com.udacity.asteroidradar.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -37,8 +38,10 @@ class MainFragment : Fragment() {
 
         })
 
-        viewModel.asteriodData.observe(viewLifecycleOwner, Observer {
+        viewModel.asteroidData.observe(viewLifecycleOwner, Observer {
+            Log.d("Test", "Obverse Data")
             it?.let {
+                Log.d("Test", "List")
                 adapter.submitList(it)
                 binding.statusLoadingWheel.visibility = View.GONE
                 //binding.asteroidRecycler.smoothScrollToPosition(0) //Scroll to the top, some reason with deleteOldAsteroids it wants to start on the next day
@@ -70,6 +73,13 @@ class MainFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        viewModel.filterAsteriods(
+            when(item.itemId) {
+                R.id.show_today_asteroids -> AsteroidFilter.TODAY
+                R.id.show_week_asteroids -> AsteroidFilter.WEEK
+                else -> AsteroidFilter.SAVED
+            }
+        )
         return true
     }
 }

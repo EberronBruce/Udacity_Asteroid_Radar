@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
@@ -15,9 +16,12 @@ import com.udacity.asteroidradar.repository.AsteroidRepository
 import kotlinx.coroutines.launch
 import java.util.*
 
+enum class AsteroidFilter {WEEK, TODAY, SAVED}
+
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    val weekDiff =  Constants.NUMBER_OF_DAYS_IN_WEEK - Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+    private val database = getDatabase(application)
+    private val asteroidRepository = AsteroidRepository(database)
 
     fun onAsteroidClicked(asteroid: Asteroid) {
         _navigateToDetail.value = asteroid
@@ -35,11 +39,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val dailyImage: LiveData<DailyImage>
         get() = _dailyImage
 
-    private val database = getDatabase(application)
-    private val asteroidRepository = AsteroidRepository(database)
+    /*
+        Use this knowlege link to help solve filtering problem. https://knowledge.udacity.com/questions/496261
+     */
 
+    private val _asteroidData = MutableLiveData<List<Asteroid>>()
+    val asteroidData: LiveData<List<Asteroid>>
+        get() = _asteroidData
+
+
+    private val asteroidDataObserver = Observer<List<Asteroid>> {
+        _asteroidData.value = it
+    }
+
+    private var asteroidDataLiveData: LiveData<List<Asteroid>>
 
     init {
+        asteroidDataLiveData = asteroidRepository.getAsteroidSelection(AsteroidFilter.SAVED)
+        asteroidDataLiveData.observeForever(asteroidDataObserver)
         getApod()
         viewModelScope.launch {
             asteroidRepository.refreshAsteroids()
@@ -47,15 +64,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    val asteriodData = asteroidRepository.todayAsteroids
-
     suspend fun deleteOldAsteroids() {
         viewModelScope.launch {
             asteroidRepository.deleteOldAsteroids()
         }
     }
-    //val asteriodData = asteroidRepository.weekAsteroids(getWeekDate())
-    //val asteriodData = asteroidRepository.todayAsteroids
 
     private fun getApod() {
         viewModelScope.launch {
@@ -72,5 +85,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
+    fun filterAsteriods(filter: AsteroidFilter) {
+        asteroidDataLiveData = asteroidRepository.getAsteroidSelection(filter)
+        asteroidDataLiveData.observeForever(asteroidDataObserver)
+    }
+
 
 }

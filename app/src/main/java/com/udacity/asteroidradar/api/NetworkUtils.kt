@@ -1,6 +1,5 @@
 package com.udacity.asteroidradar.api
 
-import android.util.Log
 import com.squareup.moshi.JsonClass
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
@@ -79,11 +78,3 @@ fun AsteroidContainer.asDatabaseModel(): Array<DatabaseAsteriod> {
 
 }
 
-fun getDateRangeFrom(difference : Int) : String {
-    val calendar = Calendar.getInstance()
-    calendar.add(Calendar.DAY_OF_YEAR, difference)
-    val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
-    val getDate = dateFormat.format(calendar.time)
-    Log.d("MainViewModel", "getDate: ${getDate}")
-    return getDate
-}
