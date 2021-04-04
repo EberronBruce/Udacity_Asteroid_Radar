@@ -10,7 +10,6 @@ import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.DailyImage
 import com.udacity.asteroidradar.api.AsteroidApi
-import com.udacity.asteroidradar.api.getDateRangeFrom
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.repository.AsteroidRepository
 import kotlinx.coroutines.launch
@@ -43,17 +42,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     init {
         getApod()
         viewModelScope.launch {
-            deleteOldAsteroids()
             asteroidRepository.refreshAsteroids()
+            deleteOldAsteroids()
         }
     }
 
-    val asteriodData = asteroidRepository.asteroids
+    val asteriodData = asteroidRepository.todayAsteroids
 
     suspend fun deleteOldAsteroids() {
         viewModelScope.launch {
-            val date = getDateRangeFrom(0)
-            Log.d("MainViewModel", "date: ${date}")
             asteroidRepository.deleteOldAsteroids()
         }
     }

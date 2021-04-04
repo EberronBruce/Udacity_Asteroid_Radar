@@ -19,24 +19,26 @@ import java.util.*
 
 class AsteroidRepository(private val database: AsteroidDatabase) {
 
+    val currentDate = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault()).format(Date())
+
     val asteroids: LiveData<List<Asteroid>> =
         Transformations.map(database.asteroidDao.getAsteroids()) {
             it.asDomainModel()
         }
 
-    val todayAsteroids: LiveData<List<Asteroid>> = Transformations.map(database.asteroidDao.getTodayAsteroids()) {
+    val todayAsteroids: LiveData<List<Asteroid>> = Transformations.map(database.asteroidDao.getAsteroidsForDate(currentDate)) {
         it.asDomainModel()
     }
 
-    fun getAsteroidsBy(days: String) : LiveData<List<Asteroid>> {
-        return Transformations.map(database.asteroidDao.getAsteroidsBy(days)) {
+    fun getAsteroidsFromDate(days: String) : LiveData<List<Asteroid>> {
+        return Transformations.map(database.asteroidDao.getAsteroidsFromDate(days)) {
             it.asDomainModel()
         }
     }
 
     suspend fun deleteOldAsteroids() {
         withContext(Dispatchers.IO) {
-            database.asteroidDao.deleteOldAsteroids()
+            database.asteroidDao.deleteOldAsteroids(currentDate)
         }
     }
 

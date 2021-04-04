@@ -41,6 +41,7 @@ class MainFragment : Fragment() {
             it?.let {
                 adapter.submitList(it)
                 binding.statusLoadingWheel.visibility = View.GONE
+                //binding.asteroidRecycler.smoothScrollToPosition(0) //Scroll to the top, some reason with deleteOldAsteroids it wants to start on the next day
             }
             if(it == null || it.isEmpty()) {
                 binding.statusLoadingWheel.visibility = View.VISIBLE
