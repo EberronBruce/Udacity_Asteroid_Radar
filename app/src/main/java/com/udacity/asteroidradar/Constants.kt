@@ -9,4 +9,5 @@ object Constants {
     const val START_DATE_QUERY = "start_date"
     const val END_DATE_QUERY = "end_date"
     const val API_KEY_QUERY = "api_key"
+    const val NUMBER_OF_DAYS_IN_WEEK = 7
 }

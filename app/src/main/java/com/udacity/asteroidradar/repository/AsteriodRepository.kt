@@ -17,12 +17,24 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
+enum class AsteroidApiStatus { LOADING, ERROR, DONE }
+
 class AsteroidRepository(private val database: AsteroidDatabase) {
 
     val asteroids: LiveData<List<Asteroid>> =
         Transformations.map(database.asteroidDao.getAsteroids()) {
             it.asDomainModel()
         }
+
+    val todayAsteroids: LiveData<List<Asteroid>> = Transformations.map(database.asteroidDao.getTodayAsteroids()) {
+        it.asDomainModel()
+    }
+
+    fun weekAsteroids(days: String) : LiveData<List<Asteroid>> {
+        return Transformations.map(database.asteroidDao.getWeekAsteroids(days)) {
+            it.asDomainModel()
+        }
+    }
 
     suspend fun refreshAsteroids() {
         withContext(Dispatchers.IO) {
