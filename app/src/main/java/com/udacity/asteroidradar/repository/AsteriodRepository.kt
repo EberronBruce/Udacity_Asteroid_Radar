@@ -17,8 +17,6 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
-enum class AsteroidApiStatus { LOADING, ERROR, DONE }
-
 class AsteroidRepository(private val database: AsteroidDatabase) {
 
     val asteroids: LiveData<List<Asteroid>> =
@@ -30,9 +28,15 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
         it.asDomainModel()
     }
 
-    fun weekAsteroids(days: String) : LiveData<List<Asteroid>> {
-        return Transformations.map(database.asteroidDao.getWeekAsteroids(days)) {
+    fun getAsteroidsBy(days: String) : LiveData<List<Asteroid>> {
+        return Transformations.map(database.asteroidDao.getAsteroidsBy(days)) {
             it.asDomainModel()
+        }
+    }
+
+    suspend fun deleteOldAsteroids() {
+        withContext(Dispatchers.IO) {
+            database.asteroidDao.deleteOldAsteroids()
         }
     }
 

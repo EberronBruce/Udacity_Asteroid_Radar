@@ -42,7 +42,7 @@ class MainFragment : Fragment() {
                 adapter.submitList(it)
                 binding.statusLoadingWheel.visibility = View.GONE
             }
-            if(it.isEmpty()) {
+            if(it == null || it.isEmpty()) {
                 binding.statusLoadingWheel.visibility = View.VISIBLE
             }
         })
